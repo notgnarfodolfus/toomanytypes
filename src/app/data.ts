@@ -14,17 +14,13 @@ function emptyMult(): Multiplier {
   return { none: new Set(), half: new Set(), double: new Set() }
 }
 
-function hasConditionalTypeMultiplier(attack: Set<PokemonType>, defense: PokemonType): boolean {
-  return attack.has(defense);
-}
-
-export function getTypeMultiplierRaw(attack: PokemonType, defense: PokemonType): number {
+export function getTypeMultiplierRaw(attack: PokemonType, defense: PokemonType, typeType: boolean = false): number {
   if (attack == TYPE_RIGHT && defense == TYPE_BABY) {
-    return 4.0; // extremly effective
+    return typeType ? 8.0 : 4.0; // extremly effective
   } else if (attack.damage.double.has(defense)) {
-    return 2.0; // very effective
+    return typeType ? 4.0 : 2.0; // very effective
   } else if (attack.damage.half.has(defense)) {
-    return 0.5; // not effective
+    return typeType ? 0.25 : 0.5; // not effective
   } else if (attack.damage.none.has(defense)) {
     return 0.0; // immune
   } else {
@@ -34,81 +30,79 @@ export function getTypeMultiplierRaw(attack: PokemonType, defense: PokemonType):
 
 export function getTypeMultiplier(attack: PokemonType, defender: PokemonType[]): number {
   var mult = 1.0;
+  const tt = defender.includes(TYPE_TYPE);
   for (let type of defender) {
-    mult *= getTypeMultiplierRaw(attack, type);
-  }
-  if (defender.includes(TYPE_TYPE)) {
-    mult *= mult;
+    mult *= getTypeMultiplierRaw(attack, type, tt);
   }
   if (defender.includes(TYPE_REVERSE)) {
-    mult *= mult;
+    mult = (mult > 0) ? 1.0 / mult : 2.0;
   }
   return mult;
 }
 
-export const TYPE_ANCIENT: PokemonType = { name: 'Ancient', color: '#eee', damage: emptyMult() };
-export const TYPE_ANGRY: PokemonType = { name: 'Angry', color: '#eee', damage: emptyMult() };
-export const TYPE_BABY: PokemonType = { name: 'Baby', color: '#eee', damage: emptyMult() };
-export const TYPE_BAD: PokemonType = { name: 'Bad', color: '#eee', damage: emptyMult() };
-export const TYPE_BALL: PokemonType = { name: 'Ball', color: '#eee', damage: emptyMult() };
-export const TYPE_BEAN: PokemonType = { name: 'Bean', color: '#eee', damage: emptyMult() };
-export const TYPE_BOOMER: PokemonType = { name: 'Boomer', color: '#eee', damage: emptyMult() };
-export const TYPE_BORING: PokemonType = { name: 'Boring', color: '#eee', damage: emptyMult() };
-export const TYPE_BUG: PokemonType = { name: 'Bug', color: '#eee', damage: emptyMult() };
-export const TYPE_CRAB: PokemonType = { name: 'Crab', color: '#eee', damage: emptyMult() };
-export const TYPE_DANCE: PokemonType = { name: 'Dance', color: '#eee', damage: emptyMult() };
-export const TYPE_DARK: PokemonType = { name: 'Dark', color: '#eee', damage: emptyMult() };
-export const TYPE_DEEZ_NUTS: PokemonType = { name: 'Deez Nuts', color: '#eee', damage: emptyMult() };
-export const TYPE_DRAGON: PokemonType = { name: 'Dragon', color: '#eee', damage: emptyMult() };
-export const TYPE_DREAM: PokemonType = { name: 'Dream', color: '#eee', damage: emptyMult() };
-export const TYPE_ELECTRIC: PokemonType = { name: 'Electric', color: '#eee', damage: emptyMult() };
-export const TYPE_EMERALD: PokemonType = { name: 'Emerald', color: '#eee', damage: emptyMult() };
-export const TYPE_FAIRY: PokemonType = { name: 'Fairy', color: '#eee', damage: emptyMult() };
-export const TYPE_FIGHTING: PokemonType = { name: 'Fighting', color: '#eee', damage: emptyMult() };
-export const TYPE_FIRE: PokemonType = { name: 'Fire', color: '#eee', damage: emptyMult() };
-export const TYPE_FLUFFY: PokemonType = { name: 'Fluffy', color: '#eee', damage: emptyMult() };
-export const TYPE_FLYING: PokemonType = { name: 'Flying', color: '#eee', damage: emptyMult() };
-export const TYPE_FRIEND: PokemonType = { name: 'Friend', color: '#eee', damage: emptyMult() };
-export const TYPE_FURRY: PokemonType = { name: 'Furry', color: '#eee', damage: emptyMult() };
-export const TYPE_GAMER: PokemonType = { name: 'Gamer', color: '#eee', damage: emptyMult() };
-export const TYPE_GENDER: PokemonType = { name: 'Gender', color: '#eee', damage: emptyMult() };
-export const TYPE_GHOST: PokemonType = { name: 'Ghost', color: '#eee', damage: emptyMult() };
-export const TYPE_GRASS: PokemonType = { name: 'Grass', color: '#eee', damage: emptyMult() };
-export const TYPE_GROUND: PokemonType = { name: 'Ground', color: '#eee', damage: emptyMult() };
-export const TYPE_GUN: PokemonType = { name: 'Gun', color: '#eee', damage: emptyMult() };
-export const TYPE_GUYS: PokemonType = { name: 'Guys', color: '#eee', damage: emptyMult() };
-export const TYPE_ICE: PokemonType = { name: 'Ice', color: '#eee', damage: emptyMult() };
-export const TYPE_LEFT: PokemonType = { name: 'Left', color: '#eee', damage: emptyMult() };
-export const TYPE_LIQUID: PokemonType = { name: 'Liquid', color: '#eee', damage: emptyMult() };
-export const TYPE_LITTLE: PokemonType = { name: 'Little', color: '#eee', damage: emptyMult() };
-export const TYPE_MAGIC: PokemonType = { name: 'Magic', color: '#eee', damage: emptyMult() };
-export const TYPE_MONKE: PokemonType = { name: 'Monke', color: '#eee', damage: emptyMult() };
-export const TYPE_MYSTERY: PokemonType = { name: 'Mystery', color: '#eee', damage: emptyMult() };
-export const TYPE_NORMAL: PokemonType = { name: 'Normal', color: '#eee', damage: emptyMult() };
-export const TYPE_NORMAL2: PokemonType = { name: 'Normal2', color: '#eee', damage: emptyMult() };
-export const TYPE_OHIO: PokemonType = { name: 'Ohio', color: '#eee', damage: emptyMult() };
-export const TYPE_OU: PokemonType = { name: 'Ou', color: '#eee', damage: emptyMult() };
-export const TYPE_PIKACHU: PokemonType = { name: 'Pikachu', color: '#eee', damage: emptyMult() };
-export const TYPE_POISON: PokemonType = { name: 'Poison', color: '#eee', damage: emptyMult() };
-export const TYPE_PRIME: PokemonType = { name: 'Prime', color: '#eee', damage: emptyMult() };
-export const TYPE_PSYCHIC: PokemonType = { name: 'Psychic', color: '#eee', damage: emptyMult() };
-export const TYPE_REVERSE: PokemonType = { name: 'Reverse', color: '#eee', damage: emptyMult() };
-export const TYPE_RIGHT: PokemonType = { name: 'Right', color: '#eee', damage: emptyMult() };
-export const TYPE_ROCK: PokemonType = { name: 'Rock', color: '#eee', damage: emptyMult() };
-export const TYPE_SANS: PokemonType = { name: 'Sans', color: '#eee', damage: emptyMult() };
-export const TYPE_SHARP: PokemonType = { name: 'Sharp', color: '#eee', damage: emptyMult() };
-export const TYPE_SILLY: PokemonType = { name: 'Silly', color: '#eee', damage: emptyMult() };
-export const TYPE_SMASH: PokemonType = { name: 'Smash', color: '#eee', damage: emptyMult() };
-export const TYPE_SONG: PokemonType = { name: 'Song', color: '#eee', damage: emptyMult() };
-export const TYPE_SPACE: PokemonType = { name: 'Space', color: '#eee', damage: emptyMult() };
-export const TYPE_STEEL: PokemonType = { name: 'Steel', color: '#eee', damage: emptyMult() };
-export const TYPE_STINKY: PokemonType = { name: 'Stinky', color: '#eee', damage: emptyMult() };
-export const TYPE_SUS: PokemonType = { name: 'Sus', color: '#eee', damage: emptyMult() };
-export const TYPE_TYPE: PokemonType = { name: 'Type', color: '#eee', damage: emptyMult() };
-export const TYPE_UGLY: PokemonType = { name: 'Ugly', color: '#eee', damage: emptyMult() };
-export const TYPE_VIBE: PokemonType = { name: 'Vibe', color: '#eee', damage: emptyMult() };
-export const TYPE_WATER: PokemonType = { name: 'Water', color: '#eee', damage: emptyMult() };
-export const TYPE_ZOOMER: PokemonType = { name: 'Zoomer', color: '#eee', damage: emptyMult() };
+export var TYPE_ANCIENT: PokemonType = { name: 'Ancient', color: '#eee', damage: emptyMult() };
+export var TYPE_ANGRY: PokemonType = { name: 'Angry', color: '#eee', damage: emptyMult() };
+export var TYPE_BABY: PokemonType = { name: 'Baby', color: '#eee', damage: emptyMult() };
+export var TYPE_BAD: PokemonType = { name: 'Bad', color: '#eee', damage: emptyMult() };
+export var TYPE_BALL: PokemonType = { name: 'Ball', color: '#eee', damage: emptyMult() };
+export var TYPE_BEAN: PokemonType = { name: 'Bean', color: '#eee', damage: emptyMult() };
+export var TYPE_BOOMER: PokemonType = { name: 'Boomer', color: '#eee', damage: emptyMult() };
+export var TYPE_BORING: PokemonType = { name: 'Boring', color: '#eee', damage: emptyMult() };
+export var TYPE_BUG: PokemonType = { name: 'Bug', color: '#eee', damage: emptyMult() };
+export var TYPE_CRAB: PokemonType = { name: 'Crab', color: '#eee', damage: emptyMult() };
+export var TYPE_DANCE: PokemonType = { name: 'Dance', color: '#eee', damage: emptyMult() };
+export var TYPE_DARK: PokemonType = { name: 'Dark', color: '#eee', damage: emptyMult() };
+export var TYPE_DEEZ_NUTS: PokemonType = { name: 'Deez Nuts', color: '#eee', damage: emptyMult() };
+export var TYPE_DRAGON: PokemonType = { name: 'Dragon', color: '#eee', damage: emptyMult() };
+export var TYPE_DREAM: PokemonType = { name: 'Dream', color: '#eee', damage: emptyMult() };
+export var TYPE_ELECTRIC: PokemonType = { name: 'Electric', color: '#eee', damage: emptyMult() };
+export var TYPE_EMERALD: PokemonType = { name: 'Emerald', color: '#eee', damage: emptyMult() };
+export var TYPE_FAIRY: PokemonType = { name: 'Fairy', color: '#eee', damage: emptyMult() };
+export var TYPE_FIGHTING: PokemonType = { name: 'Fighting', color: '#eee', damage: emptyMult() };
+export var TYPE_FIRE: PokemonType = { name: 'Fire', color: '#eee', damage: emptyMult() };
+export var TYPE_FLUFFY: PokemonType = { name: 'Fluffy', color: '#eee', damage: emptyMult() };
+export var TYPE_FLYING: PokemonType = { name: 'Flying', color: '#eee', damage: emptyMult() };
+export var TYPE_FRIEND: PokemonType = { name: 'Friend', color: '#eee', damage: emptyMult() };
+export var TYPE_FURRY: PokemonType = { name: 'Furry', color: '#eee', damage: emptyMult() };
+export var TYPE_GAMER: PokemonType = { name: 'Gamer', color: '#eee', damage: emptyMult() };
+export var TYPE_GENDER: PokemonType = { name: 'Gender', color: '#eee', damage: emptyMult() };
+export var TYPE_GHOST: PokemonType = { name: 'Ghost', color: '#eee', damage: emptyMult() };
+export var TYPE_GRASS: PokemonType = { name: 'Grass', color: '#eee', damage: emptyMult() };
+export var TYPE_GROUND: PokemonType = { name: 'Ground', color: '#eee', damage: emptyMult() };
+export var TYPE_GUN: PokemonType = { name: 'Gun', color: '#eee', damage: emptyMult() };
+export var TYPE_GUYS: PokemonType = { name: 'Guys', color: '#eee', damage: emptyMult() };
+export var TYPE_ICE: PokemonType = { name: 'Ice', color: '#eee', damage: emptyMult() };
+export var TYPE_LEFT: PokemonType = { name: 'Left', color: '#eee', damage: emptyMult() };
+export var TYPE_LIQUID: PokemonType = { name: 'Liquid', color: '#eee', damage: emptyMult() };
+export var TYPE_LITTLE: PokemonType = { name: 'Little', color: '#eee', damage: emptyMult() };
+export var TYPE_MAGIC: PokemonType = { name: 'Magic', color: '#eee', damage: emptyMult() };
+export var TYPE_MONKE: PokemonType = { name: 'Monke', color: '#eee', damage: emptyMult() };
+export var TYPE_MYSTERY: PokemonType = { name: 'Mystery', color: '#eee', damage: emptyMult() };
+export var TYPE_NORMAL: PokemonType = { name: 'Normal', color: '#eee', damage: emptyMult() };
+export var TYPE_NORMAL2: PokemonType = { name: 'Normal2', color: '#eee', damage: emptyMult() };
+export var TYPE_OHIO: PokemonType = { name: 'Ohio', color: '#eee', damage: emptyMult() };
+export var TYPE_OU: PokemonType = { name: 'Ou', color: '#eee', damage: emptyMult() };
+export var TYPE_PIKACHU: PokemonType = { name: 'Pikachu', color: '#eee', damage: emptyMult() };
+export var TYPE_POISON: PokemonType = { name: 'Poison', color: '#eee', damage: emptyMult() };
+export var TYPE_PRIME: PokemonType = { name: 'Prime', color: '#eee', damage: emptyMult() };
+export var TYPE_PSYCHIC: PokemonType = { name: 'Psychic', color: '#eee', damage: emptyMult() };
+export var TYPE_REVERSE: PokemonType = { name: 'Reverse', color: '#eee', damage: emptyMult() };
+export var TYPE_RIGHT: PokemonType = { name: 'Right', color: '#eee', damage: emptyMult() };
+export var TYPE_ROCK: PokemonType = { name: 'Rock', color: '#eee', damage: emptyMult() };
+export var TYPE_SANS: PokemonType = { name: 'Sans', color: '#eee', damage: emptyMult() };
+export var TYPE_SHARP: PokemonType = { name: 'Sharp', color: '#eee', damage: emptyMult() };
+export var TYPE_SILLY: PokemonType = { name: 'Silly', color: '#eee', damage: emptyMult() };
+export var TYPE_SMASH: PokemonType = { name: 'Smash', color: '#eee', damage: emptyMult() };
+export var TYPE_SONG: PokemonType = { name: 'Song', color: '#eee', damage: emptyMult() };
+export var TYPE_SPACE: PokemonType = { name: 'Space', color: '#eee', damage: emptyMult() };
+export var TYPE_STEEL: PokemonType = { name: 'Steel', color: '#eee', damage: emptyMult() };
+export var TYPE_STINKY: PokemonType = { name: 'Stinky', color: '#eee', damage: emptyMult() };
+export var TYPE_SUS: PokemonType = { name: 'Sus', color: '#eee', damage: emptyMult() };
+export var TYPE_TYPE: PokemonType = { name: 'Type', color: '#eee', damage: emptyMult() };
+export var TYPE_UGLY: PokemonType = { name: 'Ugly', color: '#eee', damage: emptyMult() };
+export var TYPE_VIBE: PokemonType = { name: 'Vibe', color: '#eee', damage: emptyMult() };
+export var TYPE_WATER: PokemonType = { name: 'Water', color: '#eee', damage: emptyMult() };
+export var TYPE_ZOOMER: PokemonType = { name: 'Zoomer', color: '#eee', damage: emptyMult() };
 
 TYPE_ANCIENT.damage = { none: new Set([TYPE_CRAB, TYPE_SANS, TYPE_ZOOMER]), half: new Set([TYPE_ANCIENT, TYPE_BORING, TYPE_DREAM, TYPE_ELECTRIC, TYPE_EMERALD, TYPE_GRASS, TYPE_GUN, TYPE_ICE, TYPE_OHIO, TYPE_OU, TYPE_PIKACHU, TYPE_PRIME, TYPE_SONG, TYPE_UGLY]), double: new Set([TYPE_BABY, TYPE_DRAGON, TYPE_FIGHTING, TYPE_GHOST, TYPE_GROUND, TYPE_MAGIC, TYPE_MONKE, TYPE_ROCK, TYPE_SHARP, TYPE_SPACE, TYPE_STEEL, TYPE_STINKY, TYPE_VIBE]) };
 TYPE_ANGRY.damage = { none: new Set([]), half: new Set([TYPE_ANCIENT, TYPE_BAD, TYPE_BEAN, TYPE_DANCE, TYPE_EMERALD, TYPE_FAIRY, TYPE_FIGHTING, TYPE_FLYING, TYPE_FURRY, TYPE_GHOST, TYPE_LIQUID, TYPE_MAGIC, TYPE_PRIME, TYPE_RIGHT, TYPE_SHARP, TYPE_SILLY, TYPE_SMASH, TYPE_SONG, TYPE_STEEL, TYPE_SUS, TYPE_WATER]), double: new Set([TYPE_ANGRY, TYPE_BABY, TYPE_BORING, TYPE_BUG, TYPE_DARK, TYPE_DREAM, TYPE_ELECTRIC, TYPE_FIRE, TYPE_GAMER, TYPE_GROUND, TYPE_GUYS, TYPE_ICE, TYPE_LEFT, TYPE_OHIO, TYPE_OU, TYPE_PIKACHU, TYPE_POISON, TYPE_PSYCHIC, TYPE_ROCK, TYPE_SANS, TYPE_VIBE, TYPE_ZOOMER]) };
@@ -175,7 +169,7 @@ TYPE_WATER.damage = { none: new Set([TYPE_SANS]), half: new Set([TYPE_BEAN, TYPE
 TYPE_ZOOMER.damage = { none: new Set([]), half: new Set([TYPE_ANGRY, TYPE_BAD, TYPE_DEEZ_NUTS, TYPE_DREAM, TYPE_EMERALD, TYPE_FAIRY, TYPE_FIGHTING, TYPE_GAMER, TYPE_GRASS, TYPE_GUYS, TYPE_OHIO, TYPE_ROCK, TYPE_SHARP, TYPE_STINKY, TYPE_VIBE]), double: new Set([TYPE_ANCIENT, TYPE_BABY, TYPE_BOOMER, TYPE_BORING, TYPE_BUG, TYPE_FRIEND, TYPE_GUN, TYPE_LEFT, TYPE_LITTLE, TYPE_MAGIC, TYPE_MONKE, TYPE_PRIME, TYPE_RIGHT, TYPE_SANS, TYPE_SUS, TYPE_ZOOMER]) };
 
 
-export const TYPES: PokemonType[] = [
+export var TYPES: PokemonType[] = [
   TYPE_ANCIENT,
   TYPE_ANGRY,
   TYPE_BABY,

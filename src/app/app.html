@@ -1,22 +1,6 @@
-<main class="main">
-  <div class="content">
-    <form [formGroup]="form">
-      <app-type-multi-selector
-        formControlName="attacker"
-        label="Attack Type Options"
-        [maxSelection]="0"
-      >
-      </app-type-multi-selector>
-    </form>
-    <form [formGroup]="form">
-      <app-type-multi-selector
-        formControlName="defender"
-        label="Defender Types (max 3)"
-        [maxSelection]="3"
-      >
-      </app-type-multi-selector>
-    </form>
-  </div>
-</main>
+<mat-toolbar color="primary" class="flex gap-3">
+  <img class="toolbar-icon" src="sandshrew.png" />
+  <span class="text-lg font-semibold">Too Many Types</span>
+</mat-toolbar>
 
 <router-outlet />
