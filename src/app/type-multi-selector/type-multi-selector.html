@@ -2,13 +2,15 @@
   <mat-chip-listbox>
     @for (type of selectCtrl.value; track type.name) {
       <mat-chip
+        class="type-chip"
         [removable]="true"
         (removed)="remove(type)"
-        [ngStyle]="{ 'background-color': type.color, color: '#fff' }"
+        [ngStyle]="{ 'background-color': type.color }"
       >
-        {{ type.name }}
+        <!-- @if (type.icon) { <mat-icon matChipAvatar>{{ type.icon }}</mat-icon> } -->
+        {{ type.name | uppercase }}
         <button matChipRemove>
-          <mat-icon>cancel</mat-icon>
+          <mat-icon style="color: #faf9fd">cancel</mat-icon>
         </button>
       </mat-chip>
     }

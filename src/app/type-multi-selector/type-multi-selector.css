@@ -29,3 +29,7 @@
 .clear-btn mat-icon {
   margin: 0px;
 }
+
+.type-chip {
+  --mat-chip-label-text-color: #FAF9FD;
+}

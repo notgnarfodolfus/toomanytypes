@@ -39,15 +39,15 @@
                 <span>
                   <mat-chip-set class="inline-chips">
                     @for (atk of match.attacker; track atk.name) {
-                      <mat-chip [ngStyle]="{ 'background-color': atk.color, color: '#fff' }">
-                        {{ atk.name }}
+                      <mat-chip class="type-chip" [ngStyle]="{ 'background-color': atk.color }">
+                        {{ atk.name | uppercase }}
                       </mat-chip>
                     }
                   </mat-chip-set>
                   deals
-                  <span class="font-bold" [ngStyle]="{ color: match.color }"
-                    >{{ match.rating }}x</span
-                  >
+                  <span class="font-bold" [ngStyle]="{ color: match.color }">
+                    {{ match.rating }}x
+                  </span>
                   damage
                 </span>
               </mat-list-item>
