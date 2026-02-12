@@ -29,23 +29,32 @@
         </mat-card-content>
       </mat-card>
     </section>
-    @if (hasDefender()) {
+    @let attacks = getAttack();
+    @let defense = getDefense();
+    @if (defense.length > 0) {
       <mat-card class="p-4 min-h-[160px]">
-        <mat-card-title>Multipliers</mat-card-title>
+        <mat-card-title>
+          Effectiveness of Moves against
+          @for (def of defense; track $index) {
+            <mat-chip class="type-chip-inline" [ngStyle]="{ 'background-color': def.color }">
+              {{ def.name | uppercase }}
+            </mat-chip>
+          }
+        </mat-card-title>
         <mat-card-content>
           <mat-list>
             @for (match of getMatchupRatings(); track match.rating) {
               <mat-list-item>
                 <span>
                   <mat-chip-set class="inline-chips">
-                    @for (atk of match.attacker; track atk.name) {
-                      <mat-chip class="type-chip" [ngStyle]="{ 'background-color': atk.color }">
-                        {{ atk.name | uppercase }}
+                    @for (type of match.types; track type.name) {
+                      <mat-chip class="type-chip" [ngStyle]="{ 'background-color': type.color }">
+                        {{ type.name | uppercase }}
                       </mat-chip>
                     }
                   </mat-chip-set>
                   deals
-                  <span class="font-bold" [ngStyle]="{ color: match.color }">
+                  <span class="font-bold" [ngStyle]="{ color: getRatingColor(match.rating) }">
                     {{ match.rating }}x
                   </span>
                   damage
@@ -56,6 +65,41 @@
           </mat-list>
         </mat-card-content>
       </mat-card>
+    } @else {
+      @for (attack of attacks; track $index) {
+        <mat-card class="p-4 min-h-[160px]">
+          <mat-card-title>
+            Effectiveness of
+            <mat-chip class="type-chip" [ngStyle]="{ 'background-color': attack.color }">
+              {{ attack.name | uppercase }}
+            </mat-chip>
+            Moves
+          </mat-card-title>
+          <mat-card-content>
+            <mat-list>
+              @for (match of getAttackRatings(attack); track match.rating) {
+                <mat-list-item>
+                  <span>
+                    <mat-chip-set class="inline-chips">
+                      @for (type of match.types; track type.name) {
+                        <mat-chip class="type-chip" [ngStyle]="{ 'background-color': type.color }">
+                          {{ type.name | uppercase }}
+                        </mat-chip>
+                      }
+                    </mat-chip-set>
+                    receives
+                    <span class="font-bold" [ngStyle]="{ color: getRatingColor(match.rating) }">
+                      {{ match.rating }}x
+                    </span>
+                    damage
+                  </span>
+                </mat-list-item>
+                <mat-divider></mat-divider>
+              }
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      }
     }
   </div>
 </main>

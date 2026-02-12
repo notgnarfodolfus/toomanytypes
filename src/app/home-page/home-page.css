@@ -7,3 +7,8 @@ mat-list-item {
 .type-chip {
   --mat-chip-label-text-color: #FAF9FD;
 }
+
+.type-chip-inline {
+  margin-right: 8px;
+  --mat-chip-label-text-color: #FAF9FD;
+}

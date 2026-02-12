@@ -3,15 +3,14 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TypeMultiSelector } from '../type-multi-selector/type-multi-selector';
-import { getTypeMultiplier, PokemonType, TYPES_DEFAULT_ATTACK } from '../data';
+import { getTypeMultiplier, PokemonType, TYPES, TYPES_DEFAULT_ATTACK } from '../data';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
 
 export interface Rating {
-  attacker: PokemonType[];
+  types: PokemonType[];
   rating: number;
-  color?: string;
 }
 
 @Component({
@@ -37,6 +36,21 @@ export class HomePage {
     return defs != null && defs.length > 0;
   }
 
+  getAttack(): PokemonType[] {
+    return this.attacker.controls.select.value ?? [];
+  }
+
+  getDefense(): PokemonType[] {
+    return this.defender.controls.select.value ?? [];
+  }
+
+  getAttackRatings(atk: PokemonType): Rating[] {
+    const ratings = TYPES.map((def) => {
+      return { type: def, rating: getTypeMultiplier(atk, [def]) };
+    }).filter((t) => t.rating !== 1);
+    return this.groupByScore(ratings);
+  }
+
   getMatchupRatings(): Rating[] {
     const defs = this.defender.controls.select.value;
     var atks = this.attacker.controls.select.value;
@@ -50,19 +64,23 @@ export class HomePage {
   ): Rating[] {
     if (!attackTypes || !defenseTypes || attackTypes.length === 0 || defenseTypes.length === 0)
       return [];
-    const attackRatings = new Map<number, PokemonType[]>();
-    attackTypes.forEach((atk) => {
-      const rating = getTypeMultiplier(atk, defenseTypes);
-      const entries = attackRatings.get(rating);
-      if (entries) entries.push(atk);
-      else attackRatings.set(rating, [atk]);
+    const ratings = attackTypes.map((atk) => {
+      return { type: atk, rating: getTypeMultiplier(atk, defenseTypes) };
     });
-    const ratings: Rating[] = [];
-    attackRatings.forEach((attacker, rating) =>
-      ratings.push({ attacker, rating, color: this.getRatingColor(rating) }),
-    );
-    ratings.sort((m1, m2) => m2.rating - m1.rating);
-    return ratings;
+    return this.groupByScore(ratings);
+  }
+
+  private groupByScore(attack: { type: PokemonType; rating: number }[]): Rating[] {
+    const map = new Map<number, PokemonType[]>();
+    attack.forEach((atk) => {
+      const entries = map.get(atk.rating);
+      if (entries) entries.push(atk.type);
+      else map.set(atk.rating, [atk.type]);
+    });
+    const array: Rating[] = [];
+    map.forEach((types, rating) => array.push({ types, rating }));
+    array.sort((m1, m2) => m2.rating - m1.rating);
+    return array;
   }
 
   getRatingColor(rating: number): string | undefined {
