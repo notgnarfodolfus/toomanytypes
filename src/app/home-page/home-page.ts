@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TypeMultiSelector } from '../type-multi-selector/type-multi-selector';
-import { getTypeMultiplier, PokemonType, TYPES } from '../data';
+import { getTypeMultiplier, PokemonType, TYPES_DEFAULT_ATTACK } from '../data';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatListModule } from '@angular/material/list';
@@ -40,7 +40,7 @@ export class HomePage {
   getMatchupRatings(): Rating[] {
     const defs = this.defender.controls.select.value;
     var atks = this.attacker.controls.select.value;
-    if (!atks || atks.length === 0) atks = TYPES;
+    if (!atks || atks.length === 0) atks = TYPES_DEFAULT_ATTACK;
     return this.getMatchupRatingsFor(atks, defs);
   }
 
