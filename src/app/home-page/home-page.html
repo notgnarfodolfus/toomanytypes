@@ -33,7 +33,7 @@
     @let defense = getDefense();
     @if (defense.length > 0) {
       <mat-card class="p-4 min-h-[160px]">
-        <mat-card-title>
+        <mat-card-title class="title">
           Effectiveness of Moves against
           @for (def of defense; track $index) {
             <mat-chip class="type-chip-inline" [ngStyle]="{ 'background-color': def.color }">
@@ -43,6 +43,7 @@
         </mat-card-title>
         <mat-card-content>
           <mat-list>
+            <mat-divider></mat-divider>
             @for (match of getMatchupRatings(); track match.rating) {
               <mat-list-item>
                 <span>
@@ -68,7 +69,7 @@
     } @else {
       @for (attack of attacks; track $index) {
         <mat-card class="p-4 min-h-[160px]">
-          <mat-card-title>
+          <mat-card-title class="title">
             Effectiveness of
             <mat-chip class="type-chip" [ngStyle]="{ 'background-color': attack.color }">
               {{ attack.name | uppercase }}

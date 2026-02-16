@@ -4,6 +4,10 @@ mat-list-item {
   margin: 0.5em 0em 0.5em 0em;
 }
 
+.title {
+  margin-bottom: 0.5em;
+}
+
 .type-chip {
   --mat-chip-label-text-color: #FAF9FD;
 }
